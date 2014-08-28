@@ -8,6 +8,7 @@ import com.force.sdk.oauth.context.SecurityContext;
 
 import org.springframework.stereotype.Service;
 
+import com.example.model.Account;
 import com.example.model.Person;
 
 import java.util.List;
@@ -26,13 +27,29 @@ public class PersonServiceImpl implements PersonService {
     }
     
     public void addPerson(Person person) {
+    	AccountServiceImpl accountService = new AccountServiceImpl();
+    	Account account = accountService.findAccountByName(person.getAccountName());
+    	
+    	if(account == null){
+    		account = new Account();
+    		account.setName(person.getAccountName());
+    		accountService.addAccount(account);
+    	}
+    	// Retrieve the system-generated ID for the account and associate it with the contact.
+		person.setAccountId(accountService.findAccountByName(person.getAccountName()).getId());
+		System.err.println("Set person object account ID: " + person.getAccountId());
+		System.err.println("This corresponds to account name: " + person.getAccountName());
         getForceApi().createSObject("contact", person);
     }
 
     public List<Person> listPeople() {
-   	
-        QueryResult<Person> res = getForceApi().query("SELECT Id, FirstName, LastName, Email FROM contact", Person.class);
+    	AccountServiceImpl accountService = new AccountServiceImpl();
+    	
+        QueryResult<Person> res = getForceApi().query("SELECT Id, FirstName, LastName, Email, AccountId FROM contact", Person.class);
         List<Person> people = res.getRecords();
+        for (Person p : people){
+        	p.setAccountName(accountService.findAccountName(p.getAccountId()));
+        }
         return people;
     }
 

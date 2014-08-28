@@ -43,6 +43,8 @@
                 <form:input path="lastName" />
                 <form:label path="email">Email Address</form:label>
                 <form:input path="email" />
+                <form:label path="accountName">Account Name</form:label>
+                <form:input path="accountName" />
                 
                 <input type="submit" value="Add Person" class="btn"/>
             </form:form>
@@ -55,6 +57,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Account Name</th>
                         <th>&nbsp;</th>
                     </tr>
                     </thead>
@@ -63,6 +66,7 @@
                         <tr>
                             <td>${person.lastName}, ${person.firstName}</td>
                             <td>${person.email}</td>
+                            <td>${person.accountName}</td>
                             <td><form action="delete/${person.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form></td>
                         </tr>
                     </c:forEach>
